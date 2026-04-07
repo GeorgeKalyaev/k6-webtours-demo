@@ -1,0 +1,7 @@
+services:
+  app:
+    restart: always
+    build: .
+    # 1080 как в официальной установке HP WebTours (k6 / Gatling BASE_URL)
+    ports:
+      - "1080:80"

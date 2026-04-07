@@ -1,0 +1,15 @@
+# OS
+Thumbs.db
+Desktop.ini
+
+# Local env / secrets
+.env
+.env.*
+
+# k6 / tooling (если появятся)
+node_modules/
+
+# IDE
+.idea/
+.vscode/
+*.log
