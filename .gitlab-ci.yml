@@ -1,0 +1,23 @@
+# Минимальный пайплайн GitLab CI/CD: проверка, что k6 видит скрипт (без реальной нагрузки и без WebTours).
+# Запускается на shared runners на GitLab.com или на вашем runner после push в GitLab.
+
+stages:
+  - verify
+
+# Проверка синтаксиса / импортов: не ходит в сеть к WebTours
+k6:inspect:
+  stage: verify
+  image:
+    name: grafana/k6:latest
+    entrypoint: [""]
+  script:
+    - k6 version
+    - k6 inspect src/test/js/simulation/Debug.js
+
+# Простейшая джоба без k6 — видно, как устроены stages
+smoke:shell:
+  stage: verify
+  image: alpine:3.20
+  script:
+    - echo "CI ок, репозиторий на месте"
+    - ls -la src/test/js/simulation/
