@@ -35,6 +35,7 @@ src/test/
 | `webtours-docker/` | Docker WebTours, порт **1080** |
 | `INSTALL-WEBTOURS.md` | установка, вход **jojo** / **bean** |
 | `start-webtours-docker.ps1` | запуск контейнера |
+| `scripts/run-k6-influxdb1.ps1` | запуск k6 с выводом в InfluxDB 1.x |
 | `test.js`, `step_load.js` | короткие примеры k6 |
 
 ## Быстрый старт
@@ -74,16 +75,9 @@ k6 run --out influxdb=http://localhost:8086/k6 src/test/js/simulation/Debug.js
 
 Готовый дашборд под классическую схему метрик k6 + Influx 1 (InfluxQL): [Grafana — k6 Load Testing Results, ID **2587**](https://grafana.com/grafana/dashboards/2587). В Grafana: **Connections → Data sources → InfluxDB** (режим совместимый с Influx 1 / InfluxQL), затем **Dashboards → Import** по ID.
 
-Если после импорта панели пишут **`Datasource ${DS_K6} was not found`** или ошибку про **Invalid interval string** (старые панели с `>1s`), выполните `python scripts/fix-grafana-k6-dashboard-ds.py`: подставляет UID источника **`InfluxDB k6`** вместо **`${DS_*}`** и заменяет **`>1s`** на **`1s`**. Несколько дашбордов: задайте `K6_DASH_UIDS=uid1,uid2` (PowerShell: `$env:K6_DASH_UIDS='...'`).
+Ещё варианты под Influx 1.x на [Grafana Labs](https://grafana.com/grafana/dashboards/): **24708**, **14801**, **19630** (импорт по ID, привязка к вашему datasource). Дашборды под **InfluxDB 2 / Flux** (например **19431**) сюда не входят.
 
-Чтобы **за один раз** импортировать с Grafana Labs дашборды **2587, 24708, 14801, 19630** (Influx 1.x, **без** Influx 2 / Flux) и применить правки:
-
-```powershell
-cd C:\Users\kalya\k6-webtours-demo
-python scripts/import-k6-influx1-dashboards.py
-```
-
-Нужны запущенные Grafana (например `:3000`) и datasource **`InfluxDB k6`**; логин/пароль по умолчанию как в скриптах: `GRAFANA_USER` / `GRAFANA_PASS` (или `admin` / `admin`). Повторный запуск может создать **дубликаты** у дашбордов без фиксированного `uid` в JSON — лишнее удалите в UI Grafana.
+Если после импорта старых JSON панели ругаются на **`Datasource ${DS_K6}`** (или другой `${DS_…}`): в **Dashboard settings → Variables** или в каждой панели укажите ваш InfluxDB datasource. Ошибка **Invalid interval string** из‑за **`>1s`**: в настройках панели/запроса замените минимальный интервал на **`1s`** (без символа `>`).
 
 ### Скрипт в этом репозитории
 
